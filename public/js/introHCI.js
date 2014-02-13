@@ -9,7 +9,8 @@ $(document).ready(function() {
  * Function that is called when the document is ready.
  */
 function initializePage() {
-	$('.project a').click(addProjectDetails);
+	$('.project a').click(addProjectDetails) ;
+		
 
 	$('#colorBtn').click(randomizeColors);
 }
@@ -27,6 +28,18 @@ function addProjectDetails(e) {
 	var idNumber = projectID.substr('project'.length);
 
 	console.log("User clicked on project " + idNumber);
+
+	$.get("/project/" + idNumber, detailsCallback);
+	console.log("/project/" + idNumber);
+	
+
+}
+
+function detailsCallback(result) {
+	console.log(result);
+	var id = result["id"];
+	var projectHTML = '<img src="' + result['image'] + '" class="detailsImage">' + '<p>' + result['date'] + '</p>' + '<p>' + result['summary'] + '</p></a>';
+	$("#project" + id + " .details").html(projectHTML);
 }
 
 /*
@@ -35,4 +48,14 @@ function addProjectDetails(e) {
  */
 function randomizeColors(e) {
 	console.log("User clicked on color button");
+	$.get("/palette", paletteCallback);
+}
+
+function paletteCallback(result) {
+	var colors = result["colors"].hex;
+	$('body').css('background-color', colors[0]);
+	$('.thumbnail').css('background-color', colors[1]);
+	$('h1, h2, h3, h4, h5, h5').css('color', colors[2]);
+	$('p').css('color', colors[3]);
+	$('.project img').css('opacity', .75);
 }
